@@ -152,6 +152,13 @@ function createOverlay(badge, status, message, isWarning = false, isError = fals
     if (articleContainer) {
       articleContainer.style.position = 'relative';
       articleContainer.appendChild(overlay);
+      
+      // Position overlay at same height as badge, but on far right
+      const badgeRect = badge.element.getBoundingClientRect();
+      const containerRect = articleContainer.getBoundingClientRect();
+      const topOffset = badgeRect.top - containerRect.top;
+      overlay.style.top = topOffset + 'px';
+      overlay.style.transform = 'none';
     } else {
       // Fallback: insert after link
       link.insertAdjacentElement('afterend', overlay);
