@@ -147,8 +147,15 @@ function createOverlay(badge, status, message, isWarning = false, isError = fals
       overlay.title = message;
     }
     
-    // Insert after the link
-    link.insertAdjacentElement('afterend', overlay);
+    // Find the README article/container to position overlay at far right
+    const articleContainer = link.closest('article') || link.closest('.markdown-body') || link.closest('.Box-body');
+    if (articleContainer) {
+      articleContainer.style.position = 'relative';
+      articleContainer.appendChild(overlay);
+    } else {
+      // Fallback: insert after link
+      link.insertAdjacentElement('afterend', overlay);
+    }
     
     return overlay;
   } catch (e) {
@@ -223,7 +230,7 @@ async function processBadges() {
       }
       
       // All good! Show verification overlay as independent trust indicator
-      const tier = result.skill?.tier === 'audited' ? '★ AUDITED' : '✓ VERIFIED';
+      const tier = result.skill?.tier === 'audited' ? 'AUDITED' : 'VERIFIED';
       createOverlay(badge, tier, `Verified by extension: ${result.skill?.repo} @ ${result.skill?.verifiedCommitShort}`, false, false);
       notifyBadgeScan(true, false);
       
