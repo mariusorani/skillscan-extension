@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillScan Verifier</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: #0a0a0a;
+      color: #e5e5e5;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .header img {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+    }
+    
+    .header-text h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+    }
+    
+    .header-text p {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .content {
+      padding: 16px;
+    }
+    
+    .status-card {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .status-title {
+      font-size: 11px;
+      color: #737373;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    
+    .status-value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    
+    .status-value.success { color: #22c55e; }
+    .status-value.warning { color: #f97316; }
+    .status-value.danger { color: #ef4444; }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    .stat-item {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 20px;
+      font-weight: 700;
+      color: #e5e5e5;
+    }
+    
+    .stat-label {
+      font-size: 10px;
+      color: #737373;
+      text-transform: uppercase;
+    }
+    
+    .info-section {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .info-section h3 {
+      font-size: 12px;
+      color: #e5e5e5;
+      margin-bottom: 8px;
+    }
+    
+    .info-section p {
+      font-size: 11px;
+      color: #a3a3a3;
+      line-height: 1.5;
+    }
+    
+    .links {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .link-btn {
+      flex: 1;
+      display: block;
+      text-align: center;
+      padding: 10px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #e5e5e5;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .link-btn:hover {
+      background: #333;
+      border-color: #22c55e;
+    }
+    
+    .link-btn.primary {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: white;
+    }
+    
+    .link-btn.primary:hover {
+      background: #16a34a;
+    }
+    
+    .footer {
+      padding: 12px 16px;
+      border-top: 1px solid #333;
+      text-align: center;
+    }
+    
+    .footer a {
+      color: #737373;
+      font-size: 10px;
+      text-decoration: none;
+    }
+    
+    .footer a:hover {
+      color: #22c55e;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="icons/icon48.png" alt="SkillScan">
+    <div class="header-text">
+      <h1>SkillScan Verifier</h1>
+      <p>Protecting you from malicious skills</p>
+    </div>
+  </div>
+  
+  <div class="content">
+    <div class="status-card">
+      <div class="status-title">Current Page Status</div>
+      <div class="status-value success" id="pageStatus">Protected ✓</div>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number" id="scannedCount">0</div>
+        <div class="stat-label">Badges Scanned</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="verifiedCount">0</div>
+        <div class="stat-label">Verified</div>
+      </div>
+    </div>
+    
+    <div class="info-section">
+      <h3>🛡️ How it works</h3>
+      <p>
+        This extension automatically scans GitHub pages for SkillScan badges 
+        and verifies them against our registry. Fake or spoofed badges are 
+        highlighted in red.
+      </p>
+    </div>
+    
+    <div class="links">
+      <a href="https://skillscan.dev/submit" target="_blank" class="link-btn primary">
+        Submit Skill
+      </a>
+      <a href="https://skillscan.dev/registry" target="_blank" class="link-btn">
+        Registry
+      </a>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <a href="https://skillscan.dev" target="_blank">skillscan.dev</a>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

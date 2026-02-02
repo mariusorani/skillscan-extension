@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "SkillScan Verifier",
+  "version": "1.0.0",
+  "description": "Verify AI agent skills on GitHub. Protects you from malicious skills by checking SkillScan verification status.",
+  "author": "SkillScan",
+  "homepage_url": "https://skillscan.dev",
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  
+  "permissions": [
+    "activeTab"
+  ],
+  
+  "host_permissions": [
+    "https://github.com/*",
+    "https://raw.githubusercontent.com/*",
+    "https://skillscan.dev/*"
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    },
+    "default_title": "SkillScan Verifier"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["https://github.com/*"]
+    }
+  ]
+}
