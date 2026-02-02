@@ -119,53 +119,42 @@ function checkRepoMatch(skillData, currentRepo) {
  * Create verification overlay
  */
 function createOverlay(badge, status, message, isWarning = false, isError = false) {
-  // Remove existing overlay (check siblings of the link)
-  const link = badge.element.closest('a') || badge.element.parentElement;
-  if (link?.nextElementSibling?.classList?.contains('skillscan-overlay')) {
-    link.nextElementSibling.remove();
-  }
-  
-  const overlay = document.createElement('div');
-  overlay.className = 'skillscan-overlay';
-  
-  if (isError) {
-    overlay.classList.add('skillscan-overlay-error');
-  } else if (isWarning) {
-    overlay.classList.add('skillscan-overlay-warning');
-  } else {
-    overlay.classList.add('skillscan-overlay-success');
-  }
-  
-  const icon = document.createElement('span');
-  icon.className = 'skillscan-overlay-icon';
-  icon.textContent = isError ? '✗' : isWarning ? '⚠' : '✓';
-  
-  const text = document.createElement('span');
-  text.className = 'skillscan-overlay-text';
-  text.textContent = status;
-  
-  overlay.appendChild(icon);
-  overlay.appendChild(text);
-  
-  // Add tooltip with details
-  if (message) {
-    overlay.title = message;
-  }
-  
-  // Insert overlay AFTER the badge (not on top)
-  // Find the link wrapper (badge is usually img inside <a>)
-  const link = badge.element.closest('a') || badge.element.parentElement;
-  if (link && link.parentElement) {
-    // Remove any existing overlay next to this badge
-    const nextSibling = link.nextElementSibling;
-    if (nextSibling?.classList?.contains('skillscan-overlay')) {
-      nextSibling.remove();
+  try {
+    // Find the link wrapper (badge is usually img inside <a>)
+    const link = badge.element.closest('a') || badge.element.parentElement;
+    if (!link) return null;
+    
+    // Remove existing overlay next to this badge
+    const existingOverlay = link.nextElementSibling;
+    if (existingOverlay?.classList?.contains('skillscan-overlay')) {
+      existingOverlay.remove();
     }
+    
+    const overlay = document.createElement('span');
+    overlay.className = 'skillscan-overlay';
+    
+    if (isError) {
+      overlay.classList.add('skillscan-overlay-error');
+    } else if (isWarning) {
+      overlay.classList.add('skillscan-overlay-warning');
+    } else {
+      overlay.classList.add('skillscan-overlay-success');
+    }
+    
+    overlay.innerHTML = `<span class="skillscan-overlay-icon">${isError ? '✗' : isWarning ? '⚠' : '✓'}</span><span class="skillscan-overlay-text">${status}</span>`;
+    
+    if (message) {
+      overlay.title = message;
+    }
+    
     // Insert after the link
     link.insertAdjacentElement('afterend', overlay);
+    
+    return overlay;
+  } catch (e) {
+    console.error('[SkillScan] Error creating overlay:', e);
+    return null;
   }
-  
-  return overlay;
 }
 
 /**
