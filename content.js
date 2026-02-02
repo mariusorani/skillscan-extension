@@ -119,10 +119,10 @@ function checkRepoMatch(skillData, currentRepo) {
  * Create verification overlay
  */
 function createOverlay(badge, status, message, isWarning = false, isError = false) {
-  // Remove existing overlay
-  const existingOverlay = badge.element.parentElement?.querySelector('.skillscan-overlay');
-  if (existingOverlay) {
-    existingOverlay.remove();
+  // Remove existing overlay (check siblings of the link)
+  const link = badge.element.closest('a') || badge.element.parentElement;
+  if (link?.nextElementSibling?.classList?.contains('skillscan-overlay')) {
+    link.nextElementSibling.remove();
   }
   
   const overlay = document.createElement('div');
@@ -152,11 +152,17 @@ function createOverlay(badge, status, message, isWarning = false, isError = fals
     overlay.title = message;
   }
   
-  // Position relative to badge
-  const parent = badge.element.parentElement;
-  if (parent) {
-    parent.style.position = 'relative';
-    parent.appendChild(overlay);
+  // Insert overlay AFTER the badge (not on top)
+  // Find the link wrapper (badge is usually img inside <a>)
+  const link = badge.element.closest('a') || badge.element.parentElement;
+  if (link && link.parentElement) {
+    // Remove any existing overlay next to this badge
+    const nextSibling = link.nextElementSibling;
+    if (nextSibling?.classList?.contains('skillscan-overlay')) {
+      nextSibling.remove();
+    }
+    // Insert after the link
+    link.insertAdjacentElement('afterend', overlay);
   }
   
   return overlay;
