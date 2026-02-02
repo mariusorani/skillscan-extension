@@ -29,11 +29,25 @@ function getCurrentRepo() {
 function findSkillScanBadges() {
   const badges = [];
   
-  // Find badge images
+  // Find badge images (direct src)
   const images = document.querySelectorAll('img[src*="skillscan.dev/api/badge"]');
   images.forEach(img => {
     const match = img.src.match(BADGE_PATTERN);
     if (match) {
+      badges.push({
+        element: img,
+        skillId: match[1],
+        type: 'image'
+      });
+    }
+  });
+  
+  // Find badge images via data-canonical-src (GitHub proxies images through camo.githubusercontent.com)
+  const camoImages = document.querySelectorAll('img[data-canonical-src*="skillscan.dev/api/badge"]');
+  camoImages.forEach(img => {
+    const canonicalSrc = img.getAttribute('data-canonical-src');
+    const match = canonicalSrc?.match(BADGE_PATTERN);
+    if (match && !badges.some(b => b.element === img)) {
       badges.push({
         element: img,
         skillId: match[1],
@@ -222,8 +236,10 @@ function init() {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const el = node;
             if (el.querySelector?.('img[src*="skillscan"]') || 
+                el.querySelector?.('img[data-canonical-src*="skillscan"]') ||
                 el.querySelector?.('a[href*="skillscan"]') ||
                 el.matches?.('img[src*="skillscan"]') ||
+                el.matches?.('img[data-canonical-src*="skillscan"]') ||
                 el.matches?.('a[href*="skillscan"]')) {
               shouldRescan = true;
               break;
