@@ -163,6 +163,22 @@ function createOverlay(badge, status, message, isWarning = false, isError = fals
 }
 
 /**
+ * Notify background script about badge scan result
+ */
+function notifyBadgeScan(verified, suspicious = false) {
+  try {
+    chrome.runtime.sendMessage({
+      type: 'BADGE_SCANNED',
+      verified: verified,
+      suspicious: suspicious
+    });
+  } catch (e) {
+    // Extension context may be invalidated
+    console.log('[SkillScan] Could not notify background:', e.message);
+  }
+}
+
+/**
  * Process all badges on page
  */
 async function processBadges() {
@@ -183,6 +199,7 @@ async function processBadges() {
       
       if (result.error) {
         createOverlay(badge, 'Error', result.error, false, true);
+        notifyBadgeScan(false, true);
         continue;
       }
       
@@ -190,6 +207,7 @@ async function processBadges() {
       if (!result.verified) {
         const reason = result.warning || result.message || 'Not verified';
         createOverlay(badge, 'UNVERIFIED', reason, false, true);
+        notifyBadgeScan(false, true);
         continue;
       }
       
@@ -198,22 +216,26 @@ async function processBadges() {
       
       if (!repoCheck.matches) {
         createOverlay(badge, 'MISMATCH', repoCheck.reason, false, true);
+        notifyBadgeScan(false, true);
         continue;
       }
       
       // Check for warnings (code changed, etc.)
       if (result.status === 'outdated') {
         createOverlay(badge, 'OUTDATED', result.warning, true, false);
+        notifyBadgeScan(true, false);
         continue;
       }
       
       // All good!
       const tier = result.skill?.tier === 'audited' ? 'AUDITED' : 'VERIFIED';
       createOverlay(badge, tier, `Verified: ${result.skill?.repo} @ ${result.skill?.verifiedCommitShort}`, false, false);
+      notifyBadgeScan(true, false);
       
     } catch (error) {
       console.error('[SkillScan] Error processing badge:', error);
       badge.element.style.opacity = '1';
+      notifyBadgeScan(false, true);
     }
   }
 }
