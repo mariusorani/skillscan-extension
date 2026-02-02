@@ -212,6 +212,13 @@ async function processBadges() {
         continue;
       }
       
+      // Check for outdated status FIRST (code changed but was verified)
+      if (result.status === 'outdated') {
+        createOverlay(badge, 'OUTDATED', result.warning || 'Code changed since verification', true, false);
+        notifyBadgeScan(true, false);
+        continue;
+      }
+      
       // Check if verified
       if (!result.verified) {
         const reason = result.warning || result.message || 'Not verified';
@@ -226,13 +233,6 @@ async function processBadges() {
       if (!repoCheck.matches) {
         createOverlay(badge, 'MISMATCH', repoCheck.reason, false, true);
         notifyBadgeScan(false, true);
-        continue;
-      }
-      
-      // Check for warnings (code changed, etc.)
-      if (result.status === 'outdated') {
-        createOverlay(badge, 'OUTDATED', result.warning, true, false);
-        notifyBadgeScan(true, false);
         continue;
       }
       
