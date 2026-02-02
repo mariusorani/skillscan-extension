@@ -227,10 +227,10 @@ async function processBadges() {
         continue;
       }
       
-      // All good! No overlay needed for verified badges - the badge itself shows status
-      // Only notify background for stats
+      // All good! Show verification overlay as independent trust indicator
+      const tier = result.skill?.tier === 'audited' ? '★ AUDITED' : '✓ VERIFIED';
+      createOverlay(badge, tier, `Verified by extension: ${result.skill?.repo} @ ${result.skill?.verifiedCommitShort}`, false, false);
       notifyBadgeScan(true, false);
-      console.log(`[SkillScan] Badge verified: ${result.skill?.repo} @ ${result.skill?.verifiedCommitShort}`);
       
     } catch (error) {
       console.error('[SkillScan] Error processing badge:', error);
